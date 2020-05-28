@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-          
+
     - name: generate release number
       id: release-number
       uses: mindbox-moscow/gha-release-number@v1.0.1
@@ -20,14 +20,14 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Build the Docker image
-      run: docker build . --tag itmindbox/${{ env.image }}:${{ github.sha }} --tag itmindbox/${{ env.image }}:${{ steps.release-number.outputs.release-number }} --tag itmindbox/${{ env.image }}:latest
+      run: docker build . --tag mindboxmoscow/${{ env.image }}:${{ github.sha }} --tag mindboxmoscow/${{ env.image }}:${{ steps.release-number.outputs.release-number }} --tag mindboxmoscow/${{ env.image }}:latest
 
     - name: authenticate in docker registry and push image
       run: |
         echo '${{ secrets.DOCKERHUB_REGISTRY_KEY }}' | docker login --username itmindbox --password-stdin
-        docker push itmindbox/${{ env.image }}:${{ github.sha }}
-        docker push itmindbox/${{ env.image }}:${{ steps.release-number.outputs.release-number }}
-        
+        docker push mindboxmoscow/${{ env.image }}:${{ github.sha }}
+        docker push mindboxmoscow/${{ env.image }}:${{ steps.release-number.outputs.release-number }}
+
     - name: create github release
       id: create_release
       uses: actions/create-release@master
