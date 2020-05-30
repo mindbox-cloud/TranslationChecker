@@ -1,0 +1,6 @@
+# action.yml
+name: 'Check translation'
+description: 'Checks Mindbox i18n files in .NET solution'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
