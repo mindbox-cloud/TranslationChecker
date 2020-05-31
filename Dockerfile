@@ -17,4 +17,4 @@ RUN dotnet publish ./TranslationChecker/TranslationChecker.csproj -c Release --n
 FROM mcr.microsoft.com/dotnet/core/runtime:3.0
 WORKDIR /app
 COPY --from=build /src/out .
-ENTRYPOINT ["dotnet", "TranslationChecker.dll", "/github/workspace"]
+ENTRYPOINT ["dotnet", "/app/TranslationChecker.dll", "/github/workspace"]
