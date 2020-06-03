@@ -21,8 +21,6 @@ namespace TranslationChecker
 
 		public string Namespace { get; private set; }
 
-		public bool IsFrontend { get; private set; }
-
 		public static TranslationFile TryCreateFromFilePath(string filePath)
 		{
 			var match = TranslationFileRegex.Match(filePath);
@@ -33,9 +31,7 @@ namespace TranslationChecker
 			{
 				Path = filePath,
 				Locale = match.Groups[2].Value,
-				Namespace = match.Groups[1].Value,
-				IsFrontend = filePath.Contains(@".Frontend\", StringComparison.InvariantCultureIgnoreCase) ||
-					filePath.Contains(@".LegacyFrontend\", StringComparison.InvariantCultureIgnoreCase)
+				Namespace = match.Groups[1].Value
 			};
 		}
 	}

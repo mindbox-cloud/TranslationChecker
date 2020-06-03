@@ -19,9 +19,13 @@ namespace TranslationChecker
 
 			Console.WriteLine($"Working directory: {baseDirectory}");
 
-			var fileContentAnalyzer = new FileContentAnalyzer();
-			var projectInclusionAnalyzer = new ProjectInclusionAnalyzer(baseDirectory);
-			var namespaceUniquenessAnalyzer = new NamespaceUniquenessAnalyzer();
+			var analyzers = new List<IAnalyzer>();
+
+			analyzers.Add(new FileContentAnalyzer());
+			if (!launchParameters.SkipProjectInclusionCheck)
+				analyzers.Add(new ProjectInclusionAnalyzer(baseDirectory));
+
+			analyzers.Add(new NamespaceUniquenessAnalyzer());
 			
 			Console.WriteLine("Searching for translation files...");
 
@@ -38,9 +42,10 @@ namespace TranslationChecker
 				}
 				else
 				{
-					namespaceUniquenessAnalyzer.Analyze(translationFile, errorCollector);
-					fileContentAnalyzer.Analyze(translationFile, errorCollector);
-					projectInclusionAnalyzer.Analyze(translationFile, errorCollector);
+					foreach (var analyzer in analyzers)
+					{
+						analyzer.Analyze(translationFile, errorCollector);
+					}
 				}
 
 				if (errorCollector.Errors.Any())
@@ -67,17 +72,17 @@ namespace TranslationChecker
 		{
 			public static LaunchParameters FromCommandLineArguments(string[] args)
 			{
-				if (args.Length == 1)
+				if (args.Length == 0)
 				{
-					return new LaunchParameters
-					{
-						BaseDirectory = args[0]
-					};
+					Console.WriteLine("Required arguments <SolutionFolderPath> [--skipInclusionCheck]");
+					return null;
 				}
 
-				Console.WriteLine("Required arguments <SolutionFolderPath>");
-				return null;
-
+				return new LaunchParameters
+				{
+					BaseDirectory = args[0],
+					SkipProjectInclusionCheck = args.Any(arg => arg == "--skipInclusionCheck")
+				};
 			}
 
 			private LaunchParameters()
@@ -86,6 +91,8 @@ namespace TranslationChecker
 			}
 
 			public string BaseDirectory { get; private set; }
+
+			public bool SkipProjectInclusionCheck { get; private set; }
 		}
 
 		private static void LogError(string message)
@@ -106,6 +113,7 @@ namespace TranslationChecker
 				"/obj/",
 				"/IntegrationTestsSources/",
 				"/TestResults/",
+				"/node_modules/"
 			};
 
 			var i18nFiles = Directory.GetFiles(

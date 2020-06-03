@@ -8,10 +8,10 @@ using Newtonsoft.Json.Linq;
 
 namespace TranslationChecker
 {
-	internal class FileContentAnalyzer
+	internal class FileContentAnalyzer : IAnalyzer
 	{
 		private static readonly Regex LocalizationKeyRegex =
-			new Regex(@"^([a-zA-Z0-9_]+):([a-zA-Z0-9_]+)$", RegexOptions.Compiled);
+			new Regex(@"^([a-zA-Z0-9_]+):([a-zA-Z0-9_-]+)$", RegexOptions.Compiled);
 
 		private readonly QuokkaTemplateAnalyzer quokkaAnalyzer;
 		private readonly FormatAnalyzer formatAnalyzer;

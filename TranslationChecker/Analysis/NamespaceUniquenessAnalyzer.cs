@@ -4,7 +4,7 @@ namespace TranslationChecker
 {
 	partial class TranslationChecker
 	{
-		class NamespaceUniquenessAnalyzer
+		class NamespaceUniquenessAnalyzer : IAnalyzer
 		{
 			private readonly HashSet<(string @namespace, string locale)> localeNamespaces = 
 				new HashSet<(string @namespace, string locale)>();

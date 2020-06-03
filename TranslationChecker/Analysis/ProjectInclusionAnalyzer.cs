@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace TranslationChecker
 {
-	public class ProjectInclusionAnalyzer
+	public class ProjectInclusionAnalyzer : IAnalyzer
 	{
 		private readonly Dictionary<string, bool> includedFiles = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
 		private readonly Dictionary<string, bool> includedWildcards = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
@@ -62,9 +62,6 @@ namespace TranslationChecker
 
 		public void Analyze(TranslationFile file, ErrorCollector errorCollector)
 		{
-			if (file.IsFrontend)
-				return;
-
 			var isCopiedOnBuild =
 				IsCopiedDirectly(includedFiles, file.Path)
 				?? IsCopiedViaWildcard(includedWildcards, file.Path);
