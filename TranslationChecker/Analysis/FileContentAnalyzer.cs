@@ -31,24 +31,24 @@ namespace TranslationChecker
 				{
 					var translationData = JObject.Load(jsonReader).ToObject<Dictionary<string, string>>();
 
-					foreach (var kvp in translationData)
+					foreach (var (key, translation) in translationData!)
 					{
-						var match = LocalizationKeyRegex.Match(kvp.Key);
+						var match = LocalizationKeyRegex.Match(key);
 						if (!match.Success)
 						{
-							errorCollector.AddError($"Key \"{kvp.Key}\" is invalid. Valid key format is Namespace:Key");
+							errorCollector.AddError($"Key \"{key}\" is invalid. Valid key format is Namespace:Key");
 						}
 						else
 						{
 							var keyNamespace = match.Groups[1].Value;
 							if (!string.Equals(keyNamespace, file.Namespace, StringComparison.InvariantCultureIgnoreCase))
 							{
-								errorCollector.AddError($"Namespace in key \"{kvp.Key}\" doesn't match the file namespace");
+								errorCollector.AddError($"Namespace in key \"{key}\" doesn't match the file namespace");
 							}
 						}
 
-						if (!quokkaAnalyzer.Analyze(kvp.Value))
-							errorCollector.AddError($"Translation for key \"{kvp.Key}\" is not a valid Quokka template: \"{kvp.Value}\"");
+						if (!quokkaAnalyzer.Analyze(translation))
+							errorCollector.AddError($"Translation for key \"{key}\" is not a valid Quokka template: \"{translation}\"");
 					}
 				}
 				

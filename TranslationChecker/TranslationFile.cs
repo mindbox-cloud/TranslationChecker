@@ -15,24 +15,31 @@ namespace TranslationChecker
 			$@"([^\\\/]+)\.([^\\\/]+){Regex.Escape(TranslationFileSuffix)}$",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-		public string Path { get; private set; }
+		private TranslationFile(string path, string locale, string @namespace)
+		{
+			Path = path;
+			Locale = locale;
+			Namespace = @namespace;
+		}
 
-		public string Locale { get; private set; }
+		public string Path { get; }
 
-		public string Namespace { get; private set; }
+		public string Locale { get; }
 
-		public static TranslationFile TryCreateFromFilePath(string filePath)
+		public string Namespace { get; }
+
+		public static TranslationFile? TryCreateFromFilePath(string filePath)
 		{
 			var match = TranslationFileRegex.Match(filePath);
 			if (!match.Success)
 				return null;
 
 			return new TranslationFile
-			{
-				Path = filePath,
-				Locale = match.Groups[2].Value,
-				Namespace = match.Groups[1].Value
-			};
+			(
+				filePath,
+				match.Groups[2].Value,
+				match.Groups[1].Value
+			);
 		}
 	}
 }

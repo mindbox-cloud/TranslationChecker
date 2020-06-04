@@ -19,9 +19,11 @@ namespace TranslationChecker
 
 			Console.WriteLine($"Working directory: {baseDirectory}");
 
-			var analyzers = new List<IAnalyzer>();
+			var analyzers = new List<IAnalyzer>
+			{
+				new FileContentAnalyzer()
+			};
 
-			analyzers.Add(new FileContentAnalyzer());
 			if (!launchParameters.SkipProjectInclusionCheck)
 				analyzers.Add(new ProjectInclusionAnalyzer(baseDirectory));
 
@@ -70,7 +72,7 @@ namespace TranslationChecker
 
 		private class LaunchParameters
 		{
-			public static LaunchParameters FromCommandLineArguments(string[] args)
+			public static LaunchParameters? FromCommandLineArguments(string[] args)
 			{
 				if (args.Length == 0)
 				{
@@ -79,20 +81,22 @@ namespace TranslationChecker
 				}
 
 				return new LaunchParameters
-				{
-					BaseDirectory = args[0],
-					SkipProjectInclusionCheck = args.Any(arg => arg == "--skipInclusionCheck")
-				};
+				(
+					args[0],
+					args.Any(arg => arg == "--skipInclusionCheck")
+				);
 			}
 
-			private LaunchParameters()
+			private LaunchParameters(string baseDirectory, bool skipProjectInclusionCheck)
 			{
+				BaseDirectory = baseDirectory;
+				SkipProjectInclusionCheck = skipProjectInclusionCheck;
 				// empty
 			}
 
-			public string BaseDirectory { get; private set; }
+			public string BaseDirectory { get; }
 
-			public bool SkipProjectInclusionCheck { get; private set; }
+			public bool SkipProjectInclusionCheck { get; }
 		}
 
 		private static void LogError(string message)

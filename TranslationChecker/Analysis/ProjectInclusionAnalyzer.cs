@@ -34,7 +34,7 @@ namespace TranslationChecker
 							.Select(node => new
 							{
 								Path = Path.Combine(
-									Path.GetDirectoryName(proj),
+									Path.GetDirectoryName(proj)!,
 									node.Attribute("Include").Value)
 									.Replace('\\', '/'),
 								IsCopiedOnBuild = node.Descendants()
