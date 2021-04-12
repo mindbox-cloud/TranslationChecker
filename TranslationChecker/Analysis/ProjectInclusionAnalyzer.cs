@@ -10,8 +10,8 @@ namespace TranslationChecker
 	public class ProjectInclusionAnalyzer : IAnalyzer
 	{
 		private readonly string[] ignoredNamespaces;
-		private readonly Dictionary<string, bool> includedFiles = new(StringComparer.InvariantCultureIgnoreCase);
-		private readonly Dictionary<string, bool> includedWildcards = new(StringComparer.InvariantCultureIgnoreCase);
+		private readonly Dictionary<string, bool> includedFiles = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
+		private readonly Dictionary<string, bool> includedWildcards = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
 
 		public ProjectInclusionAnalyzer(string baseDirectory, string[] ignoredNamespaces)
 		{
