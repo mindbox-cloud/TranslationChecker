@@ -25,7 +25,7 @@ namespace TranslationChecker
 			};
 
 			if (!launchParameters.SkipProjectInclusionCheck)
-				analyzers.Add(new ProjectInclusionAnalyzer(baseDirectory));
+				analyzers.Add(new ProjectInclusionAnalyzer(baseDirectory, launchParameters.IgnoredNamespaces));
 
 			analyzers.Add(new NamespaceUniquenessAnalyzer());
 			
@@ -79,24 +79,35 @@ namespace TranslationChecker
 					Console.WriteLine("Required arguments <SolutionFolderPath> [--skipInclusionCheck]");
 					return null;
 				}
+				
+				var skipInclusionCheck = args.Any(arg => arg == "--skipInclusionCheck");
+				
+				var ignoredNamespaces = skipInclusionCheck 
+					? Array.Empty<string>() 
+					: args.Length > 1 
+						? args[1].Split(',')
+						: Array.Empty<string>();
 
 				return new LaunchParameters
 				(
 					args[0],
-					args.Any(arg => arg == "--skipInclusionCheck")
+					skipInclusionCheck,
+					ignoredNamespaces
 				);
 			}
 
-			private LaunchParameters(string baseDirectory, bool skipProjectInclusionCheck)
+			private LaunchParameters(string baseDirectory, bool skipProjectInclusionCheck, string[] ignoredNamespaces)
 			{
 				BaseDirectory = baseDirectory;
 				SkipProjectInclusionCheck = skipProjectInclusionCheck;
+				IgnoredNamespaces = ignoredNamespaces;
 				// empty
 			}
 
 			public string BaseDirectory { get; }
 
 			public bool SkipProjectInclusionCheck { get; }
+			public string[] IgnoredNamespaces { get; }
 		}
 
 		private static void LogError(string message)

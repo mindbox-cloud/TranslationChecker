@@ -9,11 +9,14 @@ namespace TranslationChecker
 {
 	public class ProjectInclusionAnalyzer : IAnalyzer
 	{
-		private readonly Dictionary<string, bool> includedFiles = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
-		private readonly Dictionary<string, bool> includedWildcards = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
+		private readonly string[] ignoredNamespaces;
+		private readonly Dictionary<string, bool> includedFiles = new(StringComparer.InvariantCultureIgnoreCase);
+		private readonly Dictionary<string, bool> includedWildcards = new(StringComparer.InvariantCultureIgnoreCase);
 
-		public ProjectInclusionAnalyzer(string baseDirectory)
+		public ProjectInclusionAnalyzer(string baseDirectory, string[] ignoredNamespaces)
 		{
+			this.ignoredNamespaces = ignoredNamespaces;
+
 			var csprojFiles = Directory.GetFiles(baseDirectory, "*.csproj", SearchOption.AllDirectories)
 				.Select(path => path.Replace('\\', '/'));
 
@@ -62,6 +65,9 @@ namespace TranslationChecker
 
 		public void Analyze(TranslationFile file, ErrorCollector errorCollector)
 		{
+			if (ignoredNamespaces.Contains(file.Namespace))
+				return;
+
 			var isCopiedOnBuild =
 				IsCopiedDirectly(includedFiles, file.Path)
 				?? IsCopiedViaWildcard(includedWildcards, file.Path);
