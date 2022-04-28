@@ -87,7 +87,7 @@ namespace TranslationChecker
 			var exceptionsFilePath = Path.Join(baseDirectory, "/build/cyrillic-lines-exceptions.json");
 
 			if (!File.Exists(exceptionsFilePath))
-				return true;
+				return false;
 						
 			var exceptions = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(exceptionsFilePath));
 			var cyrillicLinesPerFile = CyrillicCounter.CountLinesWithCyrillicInFolder(baseDirectory);
