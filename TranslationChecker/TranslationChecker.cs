@@ -21,7 +21,7 @@ namespace TranslationChecker
 			var skipProjectInclusionCheck = launchParameters.SkipProjectInclusionCheck;
 			
 			var errorsOccured = 
-				TranslationErrorsFound(baseDirectory, skipProjectInclusionCheck) | NewCyrillicLinesFound(launchParameters.BaseDirectory);
+				TranslationErrorsFound(baseDirectory, skipProjectInclusionCheck) | NewCyrillicLinesFound(baseDirectory);
 			
 			if (errorsOccured)
 			{
