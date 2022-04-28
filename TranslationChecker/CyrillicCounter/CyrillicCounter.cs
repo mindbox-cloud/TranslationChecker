@@ -13,10 +13,10 @@ namespace TranslationChecker
         public static Dictionary<string, int> CountLinesWithCyrillicInFolder(string workingDirectory)
             => Directory.EnumerateFiles(workingDirectory, "*.*", SearchOption.AllDirectories)
                 .Where(file => FileRegex.IsMatch(file))
-                .Select(file => (FileName: file, Count: CountLinesWithCyrillicInFile(file)))
+                .Select(file => (FileName: Path.GetRelativePath(workingDirectory, file), Count: CountLinesWithCyrillicInFile(file)))
                 .Where(dto => dto.Count != 0)
                 .ToDictionary(dto => dto.FileName, dto => dto.Count);
-			
+
         private static int CountLinesWithCyrillicInFile(string filePath)
             => File
                 .ReadLines(filePath)

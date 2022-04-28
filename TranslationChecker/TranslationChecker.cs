@@ -25,12 +25,12 @@ namespace TranslationChecker
 			
 			if (errorsOccured)
 			{
-				Console.WriteLine("Error: there are problems with some translation files.");
+				Console.WriteLine("Error: there are problems with translations.");
 				Console.WriteLine("Inspect the log messages above.");
 				return -1;
 			}
 
-			Console.WriteLine("Success: no problems found with translation files.");
+			Console.WriteLine("Success: no problems found with translations.");
 			return 0;
 		}
 
@@ -96,13 +96,13 @@ namespace TranslationChecker
 				.Distinct()
 				.Select(key => new
 				{
-					FileFullName = key,
+					RelativePath = key,
 					InExceptions = exceptions.ContainsKey(key) ? exceptions[key] : 0,
 					InFile = cyrillicLinesPerFile.ContainsKey(key) ? cyrillicLinesPerFile[key] : 0
 				})
 				.Select(dto => new
 				{
-					FileName = Path.GetRelativePath(baseDirectory, dto.FileFullName),
+					dto.RelativePath,
 					Delta = dto.InFile - dto.InExceptions
 				})
 				.Where(dto => dto.Delta > 0)
@@ -113,7 +113,7 @@ namespace TranslationChecker
 			
 			foreach (var file in filesWithNewCyrillicLines)
 			{
-				LogError($"File {file.FileName} has {file.Delta} more lines with cyrillic symbols.");
+				LogError($"File {file.RelativePath} has {file.Delta} more lines with cyrillic symbols.");
 			}
 
 			return true;
