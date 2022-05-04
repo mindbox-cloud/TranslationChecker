@@ -84,7 +84,7 @@ namespace TranslationChecker
 		
 		private static bool NewCyrillicLinesFound(string baseDirectory)
 		{
-			var exceptionsFilePath = Path.Join(baseDirectory, "/localization/cyrillic-lines-exceptions.json");
+			var exceptionsFilePath = Path.Join(baseDirectory, "localization/cyrillic-lines-exceptions.json");
 
 			if (!File.Exists(exceptionsFilePath))
 				return false;
