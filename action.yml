@@ -6,8 +6,14 @@ inputs:
     description: 'Forces checker to skip inclusion check if --skipInclusionCheck is passed as a value'
     required: false
     default: ''
+    
+    skip-new-cyrillic-lines-check:
+    description: 'Forces checker to skip new cyrillic lines check if --skipNewCyrillicLinesCheck is passed as a value'
+    required: false
+    default: ''
 runs:
   using: 'docker'
   image: 'docker://mindboxmoscow/translation-checker'
   args:
     - ${{ inputs.skip-inclusion-check }}
+    - ${{ inputs.skip-new-cyrillic-lines-check }}

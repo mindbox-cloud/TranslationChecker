@@ -19,10 +19,13 @@ namespace TranslationChecker
 
 			var baseDirectory = launchParameters.BaseDirectory;
 			var skipProjectInclusionCheck = launchParameters.SkipProjectInclusionCheck;
+			var skipNewCyrillicLinesCheck = launchParameters.SkipNewCyrillicLinesCheck;
 			
-			var errorsOccured = 
-				TranslationErrorsFound(baseDirectory, skipProjectInclusionCheck) | NewCyrillicLinesFound(baseDirectory);
-			
+			var translationErrorsFound = TranslationErrorsFound(baseDirectory, skipProjectInclusionCheck);
+			var newCyrillicLinesFound = !skipNewCyrillicLinesCheck && NewCyrillicLinesFound(baseDirectory);
+
+			var errorsOccured = translationErrorsFound || newCyrillicLinesFound;
+
 			if (errorsOccured)
 			{
 				Console.WriteLine("Error: there are problems with translations.");
@@ -132,20 +135,23 @@ namespace TranslationChecker
 				return new LaunchParameters
 				(
 					args[0],
-					args.Any(arg => arg == "--skipInclusionCheck")
+					args.Any(arg => arg == "--skipInclusionCheck"),
+					args.Any(arg => arg == "--skipNewCyrillicLinesCheck")
 				);
 			}
 
-			private LaunchParameters(string baseDirectory, bool skipProjectInclusionCheck)
+			private LaunchParameters(string baseDirectory, bool skipProjectInclusionCheck, bool skipNewCyrillicLinesCheck)
 			{
 				BaseDirectory = baseDirectory;
 				SkipProjectInclusionCheck = skipProjectInclusionCheck;
-				// empty
+				SkipNewCyrillicLinesCheck = skipNewCyrillicLinesCheck;
 			}
 
 			public string BaseDirectory { get; }
 
 			public bool SkipProjectInclusionCheck { get; }
+			
+			public bool SkipNewCyrillicLinesCheck { get; }
 		}
 
 		private static void LogError(string message)
